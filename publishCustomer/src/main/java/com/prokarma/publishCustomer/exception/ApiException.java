@@ -17,7 +17,6 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.databind.annotation.JsonTypeIdResolver;
 import com.fasterxml.jackson.databind.jsontype.impl.TypeIdResolverBase;
 
-
 @JsonTypeInfo(include = JsonTypeInfo.As.WRAPPER_OBJECT, use = JsonTypeInfo.Id.CUSTOM, property = "error", visible = true)
 @JsonTypeIdResolver(LowerCaseClassNameResolver.class)
 class ApiException {
@@ -31,8 +30,37 @@ class ApiException {
 		return status;
 	}
 
+	@Override
+	public String toString() {
+		if (subErrors != null) {
+			return "ApiException [status=" + status + ", timestamp=" + timestamp + ", message=" + message
+					+ ", debugMessage=" + debugMessage + ", subErrors=" + subErrors + "]";
+		} else {
+			return "ApiException [status=" + status + ", timestamp=" + timestamp + ", message=" + message
+					+ ", debugMessage=" + debugMessage + "]";
+		}
+	}
+
+	public ApiException(HttpStatus status, LocalDateTime timestamp, String message, String debugMessage,
+			List<ApiSubException> subErrors) {
+		super();
+		this.status = status;
+		this.timestamp = timestamp;
+		this.message = message;
+		this.debugMessage = debugMessage;
+		this.subErrors = subErrors;
+	}
+
 	public void setStatus(HttpStatus status) {
 		this.status = status;
+	}
+
+	public List<ApiSubException> getSubErrors() {
+		return subErrors;
+	}
+
+	public void setSubErrors(List<ApiSubException> subErrors) {
+		this.subErrors = subErrors;
 	}
 
 	public String getMessage() {
@@ -53,7 +81,7 @@ class ApiException {
 		this.debugMessage = debugMessage;
 	}
 
-	private List<ApiSubEexception> subErrors;
+	private List<ApiSubException> subErrors;
 
 	private ApiException() {
 		timestamp = LocalDateTime.now();
@@ -78,7 +106,7 @@ class ApiException {
 		this.debugMessage = ex.getLocalizedMessage();
 	}
 
-	private void addSubError(ApiSubEexception subError) {
+	private void addSubError(ApiSubException subError) {
 		if (subErrors == null) {
 			subErrors = new ArrayList<>();
 		}
@@ -86,11 +114,11 @@ class ApiException {
 	}
 
 	private void addValidationError(String object, String field, Object rejectedValue, String message) {
-		addSubError(new ApiValidationError(object, field, rejectedValue, message));
+		addSubError(new ApiValidationException(object, field, rejectedValue, message));
 	}
 
 	private void addValidationError(String object, String message) {
-		addSubError(new ApiValidationError(object, message));
+		addSubError(new ApiValidationException(object, message));
 	}
 
 	private void addValidationError(FieldError fieldError) {
@@ -123,62 +151,6 @@ class ApiException {
 
 	void addValidationErrors(Set<ConstraintViolation<?>> constraintViolations) {
 		constraintViolations.forEach(this::addValidationError);
-	}
-
-	abstract class ApiSubEexception {
-
-	}
-
-	class ApiValidationError extends ApiSubEexception {
-		public ApiValidationError(String object, String field, Object rejectedValue, String message) {
-			super();
-			this.object = object;
-			this.field = field;
-			this.rejectedValue = rejectedValue;
-			this.message = message;
-		}
-
-		public String getObject() {
-			return object;
-		}
-
-		public void setObject(String object) {
-			this.object = object;
-		}
-
-		public String getField() {
-			return field;
-		}
-
-		public void setField(String field) {
-			this.field = field;
-		}
-
-		public Object getRejectedValue() {
-			return rejectedValue;
-		}
-
-		public void setRejectedValue(Object rejectedValue) {
-			this.rejectedValue = rejectedValue;
-		}
-
-		public String getMessage() {
-			return message;
-		}
-
-		public void setMessage(String message) {
-			this.message = message;
-		}
-
-		private String object;
-		private String field;
-		private Object rejectedValue;
-		private String message;
-
-		ApiValidationError(String object, String message) {
-			this.object = object;
-			this.message = message;
-		}
 	}
 }
 
