@@ -1,0 +1,130 @@
+swagger: "2.0"
+info:
+  description: "This is a Producer Service. It takes customer details and post the data into Kafka."
+  version: "1.0.0"
+  title: "Producer server"
+  termsOfService: "http://swagger.io/terms/"
+  contact:
+    email: "eshabarish@pkglobal.com"
+  license:
+    name: "Apache 2.0"
+    url: "http://www.apache.org/licenses/LICENSE-2.0.html"
+host: "localhost:8081"
+basePath: "/api"
+tags:
+- name: "Customer"
+  description: "Everything about your Customer"
+schemes:
+- "https"
+paths:
+  /publish:
+    post:
+      tags:
+      - "Customer"
+      summary: "Add a new custmoer to the kafka"
+      description: "Method to add customer to Kafka"
+      operationId: "addCustmoer"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "Authorization"
+        in: "header"
+        required: true
+        type: "string"
+      - name: "Transaction-Id"
+        in: "header"
+        required: true
+        type: "string"
+      - name: "Activity-Id"
+        in: "header"
+        required: true
+        type: "string"
+      - in: "body"
+        name: "body"
+        description: "Custmoer object that needs to be added to the Kafka"
+        required: true
+        schema:
+          $ref: "#/definitions/Customer"
+      responses:
+        "200":
+          description: "Success"
+          schema:
+            $ref: "#/definitions/PublishCustomerResponse"
+        "400":
+          description: "Bad Request"
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+        "401":
+          description: "Unauthorized"
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+        "404":
+          description: "Not Found"
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+        "500":
+          description: "Internal failure"
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+definitions:
+  Customer:
+    type: "object"
+    required: [customerNumber, firstName, lastName, birthdate, country, countryCode, mobileNumber, email, customerStatus, address]
+    properties:
+      customerNumber:
+        type: "string"
+      firstName:
+        type: "string"
+      lastName:
+        type: "string"
+      birthdate:
+        type: "string"
+      country:
+        type: "string"
+      countryCode:
+        type: "string"
+      mobileNumber:
+        type: "string"
+      email:
+        type: "string"
+      customerStatus:
+        type: "string"
+        description: "Order Status"
+        enum:
+        - "Restored"
+        - "Suspended"
+        - "Open"
+        - "Closed"
+      address :
+        $ref: "#/definitions/Address"
+  Address:
+    type: "object"
+    required: [addressLine1, postalCode]
+    properties:
+      addressLine1 :
+        type: "string"
+      addressLine2 :
+        type: "string"
+      street:
+        type: "string"
+      postalCode:
+        type: "string"
+  PublishCustomerResponse:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+      message:
+        type: "string"
+  ErrorResponse:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+      message:
+        type: "string"
+      errorType:
+        type: "object"
+  
