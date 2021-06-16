@@ -16,7 +16,7 @@ public class ErrorResponse {
   private String message;
 
   @JsonProperty("errorType")
-  private String errorType;
+  private Object errorType;
 
   public ErrorResponse status(String status) {
     this.status = status;
@@ -56,7 +56,7 @@ public class ErrorResponse {
     this.message = message;
   }
 
-  public ErrorResponse errorType(String errorType) {
+  public ErrorResponse errorType(Object errorType) {
     this.errorType = errorType;
     return this;
   }
@@ -67,7 +67,7 @@ public class ErrorResponse {
    * @return errorType
    */
   @ApiModelProperty(value = "")
-  public String getErrorType() {
+  public Object getErrorType() {
     return errorType;
   }
 
