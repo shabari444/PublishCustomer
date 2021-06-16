@@ -1,9 +1,7 @@
 package com.prokarma.publishCustomer.model;
 
 import java.io.Serializable;
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonValue;
+import com.prokarma.publishCustomer.model.Customer.StatusEnum;
 
 public class KafkaCustomer implements Serializable {
 
@@ -12,64 +10,41 @@ public class KafkaCustomer implements Serializable {
    */
   private static final long serialVersionUID = -1100227914817526978L;
 
-  @JsonProperty
+
   private String transactionId;
 
-  @JsonProperty
+
   private String activeId;
 
-  @JsonProperty
+
   private String customerNumber = null;
 
-  @JsonProperty
+
   private String firstName = null;
-  @JsonProperty
+
   private String lastName = null;
-  @JsonProperty
+
   private String birthdate = null;
-  @JsonProperty
+
   private String country = null;
-  @JsonProperty
+
   private String countryCode = null;
-  @JsonProperty
+
   private String mobileNumber = null;
-  @JsonProperty
+
   private String email = null;
 
-  /** Customer status in the store */
-  public enum StatusEnum {
-    RESTORED("Restored"),
 
-    SUSPENDED("Suspended"),
+  private StatusEnum status = null;
 
-    OPEN("Open"),
-
-    CLOSED("Closed");
-
-    private String value;
-
-    StatusEnum(String value) {
-      this.value = value;
-    }
-
-    @Override
-    @JsonValue
-    public String toString() {
-      return String.valueOf(value);
-    }
-
-    @JsonCreator
-    public static StatusEnum fromValue(String text) {
-      for (StatusEnum b : StatusEnum.values()) {
-        if (String.valueOf(b.value).equals(text)) {
-          return b;
-        }
-      }
-      return null;
-    }
+  public StatusEnum getStatus() {
+    return status;
   }
 
-  @JsonProperty
+  public void setStatus(StatusEnum status) {
+    this.status = status;
+  }
+
   private Address address = null;
 
   public String getTransactionId() {
@@ -176,6 +151,7 @@ public class KafkaCustomer implements Serializable {
     result = prime * result + ((firstName == null) ? 0 : firstName.hashCode());
     result = prime * result + ((lastName == null) ? 0 : lastName.hashCode());
     result = prime * result + ((mobileNumber == null) ? 0 : mobileNumber.hashCode());
+    result = prime * result + ((status == null) ? 0 : status.hashCode());
     result = prime * result + ((transactionId == null) ? 0 : transactionId.hashCode());
     return result;
   }
@@ -239,6 +215,8 @@ public class KafkaCustomer implements Serializable {
         return false;
     } else if (!mobileNumber.equals(other.mobileNumber))
       return false;
+    if (status != other.status)
+      return false;
     if (transactionId == null) {
       if (other.transactionId != null)
         return false;
@@ -252,8 +230,8 @@ public class KafkaCustomer implements Serializable {
     return "KafkaCustomer [transactionId=" + transactionId + ", activeId=" + activeId
         + ", customerNumber=" + customerNumber + ", firstName=" + firstName + ", lastName="
         + lastName + ", birthdate=" + birthdate + ", country=" + country + ", countryCode="
-        + countryCode + ", mobileNumber=" + mobileNumber + ", email=" + email + ", address="
-        + address + "]";
+        + countryCode + ", mobileNumber=" + mobileNumber + ", email=" + email + ", status=" + status
+        + ", address=" + address + "]";
   }
 
 

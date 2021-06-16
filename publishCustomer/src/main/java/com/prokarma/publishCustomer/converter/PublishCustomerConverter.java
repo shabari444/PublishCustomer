@@ -20,6 +20,7 @@ public class PublishCustomerConverter {
     kafkaCustomer.setFirstName(customer.getFirstName());
     kafkaCustomer.setLastName(customer.getLastName());
     kafkaCustomer.setMobileNumber(customer.getMobileNumber());
+    kafkaCustomer.setStatus(customer.getStatus());
     return kafkaCustomer;
   }
 
