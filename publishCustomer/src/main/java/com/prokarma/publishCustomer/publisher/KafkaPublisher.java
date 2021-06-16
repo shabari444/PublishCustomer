@@ -1,24 +1,26 @@
 package com.prokarma.publishCustomer.publisher;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
-
-import com.prokarma.publishCustomer.model.Customer;
+import com.prokarma.publishCustomer.model.KafkaCustomer;
+import com.prokarma.publishCustomer.util.ObjectMapperUtil;
 
 @Component
 public class KafkaPublisher {
 
-	@Autowired
-	private KafkaTemplate<String, Customer> kafkaTemplate;
+  @Autowired
+  private KafkaTemplate<String, String> kafkaTemplate;
 
-	public static final String TOPIC = "CREATE_CUSTOMER";
+  @Value("${topic}")
+  private String topic;
 
-	public Object publishCustometToKafka(Customer customer) {
+  public String publishCustometToKafka(KafkaCustomer publishCustomer) {
 
-		kafkaTemplate.send(TOPIC, customer);
+    kafkaTemplate.send(topic, ObjectMapperUtil.returnJsonFromObject(publishCustomer));
 
-		return "Success";
+    return "Success";
 
-	}
+  }
 }

@@ -1,8 +1,8 @@
 package com.prokarma.publishCustomer.service;
 
-import com.prokarma.publishCustomer.model.Customer;
+import com.prokarma.publishCustomer.model.KafkaCustomer;
 
 public interface PublishCustomerService {
 	
-	public Object postCustomer(Customer customer);
+	public String postCustomer(KafkaCustomer kafkaCustomer);
 }
