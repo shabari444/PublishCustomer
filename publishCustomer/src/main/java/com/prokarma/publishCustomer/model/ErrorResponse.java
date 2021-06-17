@@ -75,24 +75,14 @@ public class ErrorResponse {
     this.errorType = errorType;
   }
 
-  @Override
-  public boolean equals(java.lang.Object o) {
-    if (this == o) {
-      return true;
-    }
-    if (o == null || getClass() != o.getClass()) {
-      return false;
-    }
-    ErrorResponse address = (ErrorResponse) o;
-    return Objects.equals(this.status, address.status)
-        && Objects.equals(this.message, address.message)
-        && Objects.equals(this.errorType, address.errorType);
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(status, message, errorType);
-  }
+  /*
+   * @Override public boolean equals(java.lang.Object o) { if (this == o) { return true; } if (o ==
+   * null || getClass() != o.getClass()) { return false; } ErrorResponse address = (ErrorResponse)
+   * o; return Objects.equals(this.status, address.status) && Objects.equals(this.message,
+   * address.message) && Objects.equals(this.errorType, address.errorType); }
+   * 
+   * @Override public int hashCode() { return Objects.hash(status, message, errorType); }
+   */
 
   @Override
   public String toString() {

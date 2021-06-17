@@ -56,23 +56,15 @@ public class PublishCustomerResponse {
   }
 
 
-  @Override
-  public boolean equals(java.lang.Object o) {
-    if (this == o) {
-      return true;
-    }
-    if (o == null || getClass() != o.getClass()) {
-      return false;
-    }
-    PublishCustomerResponse publishCustomerResponse = (PublishCustomerResponse) o;
-    return Objects.equals(this.status, publishCustomerResponse.status)
-        && Objects.equals(this.message, publishCustomerResponse.message);
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(status, message);
-  }
+  /*
+   * @Override public boolean equals(java.lang.Object o) { if (this == o) { return true; } if (o ==
+   * null || getClass() != o.getClass()) { return false; } PublishCustomerResponse
+   * publishCustomerResponse = (PublishCustomerResponse) o; return Objects.equals(this.status,
+   * publishCustomerResponse.status) && Objects.equals(this.message,
+   * publishCustomerResponse.message); }
+   * 
+   * @Override public int hashCode() { return Objects.hash(status, message); }
+   */
 
   @Override
   public String toString() {
