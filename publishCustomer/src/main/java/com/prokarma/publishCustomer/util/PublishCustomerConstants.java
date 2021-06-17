@@ -2,6 +2,9 @@ package com.prokarma.publishCustomer.util;
 
 public class PublishCustomerConstants {
 
+  private PublishCustomerConstants() {
+
+  }
 
   public static final String SUCCESS = "SUCCESS";
 

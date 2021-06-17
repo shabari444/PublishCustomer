@@ -21,9 +21,15 @@ import com.prokarma.publishCustomer.util.ObjectMapperUtil;
 import com.prokarma.publishCustomer.util.PublishCustomerConstants;
 
 @ControllerAdvice
-public class PublishCustomerControllerAdvice { // extends ResponseEntityExceptionHandler {
+public class PublishCustomerControllerAdvice {
 
   public static final Logger log = LoggerFactory.getLogger(PublishCustomerControllerAdvice.class);
+
+  private String commonErrorString = "request failed, error response: ";
+
+  private String trasactionId = "transaction-id";
+
+  private ErrorResponse errorResponse = null;
 
   /**
    * 
@@ -34,12 +40,14 @@ public class PublishCustomerControllerAdvice { // extends ResponseEntityExceptio
   @ExceptionHandler(ServletRequestBindingException.class)
   public ResponseEntity<ErrorResponse> handleException(ServletRequestBindingException ex,
       HttpServletRequest request) {
-    ErrorResponse errorResponse = new ErrorResponse();
+    errorResponse = new ErrorResponse();
     errorResponse.setStatus(PublishCustomerConstants.ERRORSTATUS);
     errorResponse.setMessage("Input Headers are mising: " + ex.getMessage());
     errorResponse.setErrorType(InputException.class.getSimpleName());
-    log.error("[" + request.getHeader("transaction-id") + "]" + "request failed, error response: "
-        + ObjectMapperUtil.returnJsonFromObject(errorResponse));
+
+    log.error(String.format("[%s]%s%s", request.getHeader(trasactionId), commonErrorString,
+        ObjectMapperUtil.returnJsonFromObject(errorResponse)));
+
     return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
   }
 
@@ -52,24 +60,24 @@ public class PublishCustomerControllerAdvice { // extends ResponseEntityExceptio
   @ExceptionHandler(AuthenticationException.class)
   public ResponseEntity<ErrorResponse> handleException(AuthenticationException ex,
       HttpServletRequest request) {
-    ErrorResponse errorResponse = new ErrorResponse();
+    errorResponse = new ErrorResponse();
     errorResponse.setStatus(PublishCustomerConstants.ERRORSTATUS);
     errorResponse.setMessage("Token exception: " + ex.getMessage());
     errorResponse.setErrorType(TokenException.class.getSimpleName());
-    log.error("[" + request.getHeader("transaction-id") + "]" + "request failed, error response: "
-        + ObjectMapperUtil.returnJsonFromObject(errorResponse));
+    log.error(String.format("[%s]%s%s", request.getHeader(trasactionId), commonErrorString,
+        ObjectMapperUtil.returnJsonFromObject(errorResponse)));
     return new ResponseEntity<>(errorResponse, HttpStatus.UNAUTHORIZED);
   }
 
   @ExceptionHandler(NoHandlerFoundException.class)
   public ResponseEntity<ErrorResponse> handleException(NoHandlerFoundException ex,
       HttpServletRequest request) {
-    ErrorResponse errorResponse = new ErrorResponse();
+    errorResponse = new ErrorResponse();
     errorResponse.setStatus(PublishCustomerConstants.ERRORSTATUS);
     errorResponse.setMessage("General error: " + ex.getMessage());
     errorResponse.setErrorType(GeneralException.class.getSimpleName());
-    log.error("[" + request.getHeader("transaction-id") + "]" + "request failed, error response: "
-        + ObjectMapperUtil.returnJsonFromObject(errorResponse));
+    log.error(String.format("[%s]%s%s", request.getHeader(trasactionId), commonErrorString,
+        ObjectMapperUtil.returnJsonFromObject(errorResponse)));
     return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
   }
 
@@ -77,12 +85,12 @@ public class PublishCustomerControllerAdvice { // extends ResponseEntityExceptio
   @ExceptionHandler(GeneralException.class)
   public ResponseEntity<ErrorResponse> handleException(GeneralException ex,
       HttpServletRequest request) {
-    ErrorResponse errorResponse = new ErrorResponse();
+    errorResponse = new ErrorResponse();
     errorResponse.setStatus(PublishCustomerConstants.ERRORSTATUS);
     errorResponse.setMessage("General error: " + ex.getMessage());
     errorResponse.setErrorType(GeneralException.class.getSimpleName());
-    log.error("[" + request.getHeader("transaction-id") + "]" + "request failed, error response: "
-        + ObjectMapperUtil.returnJsonFromObject(errorResponse));
+    log.error(String.format("[%s]%s%s", request.getHeader(trasactionId), commonErrorString,
+        ObjectMapperUtil.returnJsonFromObject(errorResponse)));
     return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
   }
 
@@ -106,12 +114,12 @@ public class PublishCustomerControllerAdvice { // extends ResponseEntityExceptio
       }
     }
 
-    ErrorResponse errorResponse = new ErrorResponse();
+    errorResponse = new ErrorResponse();
     errorResponse.setStatus(PublishCustomerConstants.ERRORSTATUS);
     errorResponse.setMessage("Input request validation failed: " + fieldValidationError);
     errorResponse.setErrorType(InputException.class.getSimpleName());
-    log.error("[" + request.getHeader("transaction-id") + "]" + "request failed, error response: "
-        + ObjectMapperUtil.returnJsonFromObject(errorResponse));
+    log.error(String.format("[%s]%s%s", request.getHeader(trasactionId), commonErrorString,
+        ObjectMapperUtil.returnJsonFromObject(errorResponse)));
     return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
   }
 

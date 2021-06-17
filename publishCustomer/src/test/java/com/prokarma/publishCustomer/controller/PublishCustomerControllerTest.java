@@ -37,7 +37,7 @@ import com.prokarma.publishCustomer.util.ObjectMapperUtil;
 @RunWith(SpringRunner.class)
 @WebAppConfiguration
 @SpringBootTest(classes = PublishCustomerApplication.class)
-public class PublishCustomerControllerTest {
+class PublishCustomerControllerTest {
 
   @Autowired
   private WebApplicationContext wac;
@@ -118,7 +118,7 @@ public class PublishCustomerControllerTest {
   private KafkaCustomer kafkaCustomer = new KafkaCustomer();
 
   @Test
-  public void testPublishCustomerSuccessCase() throws Exception {
+  void testPublishCustomerSuccessCase() throws Exception {
 
 
     String accessToken = obtainAccessToken(USERNAME, PASSWORD);
@@ -133,7 +133,7 @@ public class PublishCustomerControllerTest {
   }
 
   @Test
-  public void testPublishCustomerAuthenticationfailed() throws Exception {
+  void testPublishCustomerAuthenticationfailed() throws Exception {
 
     Mockito.when(publishCustomerService.postCustomer(kafkaCustomer)).thenReturn("Success");
 
@@ -150,7 +150,7 @@ public class PublishCustomerControllerTest {
   }
 
   @Test
-  public void testPublishCustomerInvalidInput() throws Exception {
+  void testPublishCustomerInvalidInput() throws Exception {
 
     Mockito.when(publishCustomerService.postCustomer(kafkaCustomer)).thenReturn("Success");
 
@@ -168,7 +168,7 @@ public class PublishCustomerControllerTest {
   }
 
   @Test
-  public void testPublishCustomerNoHandlerfound() throws Exception {
+  void testPublishCustomerNoHandlerfound() throws Exception {
 
     Mockito.when(publishCustomerService.postCustomer(kafkaCustomer)).thenReturn("Success");
 
@@ -186,7 +186,7 @@ public class PublishCustomerControllerTest {
   }
 
   @Test
-  public void testPublishCustomerHeadersMissing() throws Exception {
+  void testPublishCustomerHeadersMissing() throws Exception {
 
     Mockito.when(publishCustomerService.postCustomer(kafkaCustomer)).thenReturn("Success");
 
@@ -201,26 +201,6 @@ public class PublishCustomerControllerTest {
         .accept(CONTENT_TYPE)).andExpect(status().isBadRequest());
 
   }
-
-
-  /*
-   * @Test public void testPublishCustomerInternalServerError() throws Exception {
-   * 
-   * Mockito.when(publishCustomerService.postCustomer(kafkaCustomer)).thenReturn("Success");
-   * 
-   * 
-   * System.out.println(ObjectMapperUtil.returnJsonFromObject(inValidCustomer));
-   * 
-   * exception.expect(GeneralException.class);
-   * 
-   * mockMvc.perform(post("/api/publish") .header("Authorization", "Bearer " +
-   * obtainAccessToken(USERNAME, PASSWORD)) .header("Transaction-Id",
-   * "testTransactionId").header("Activity-Id", "testActivityId") .contentType(CONTENT_TYPE)
-   * .content(ObjectMapperUtil.returnJsonFromObject(inValidCustomer))
-   * .accept(CONTENT_TYPE)).andExpect(status().isInternalServerError());
-   * 
-   * }
-   */
 
 
 

@@ -22,7 +22,7 @@ import com.prokarma.publishCustomer.model.KafkaCustomer;
 @SpringBootTest(classes = PublishCustomerApplication.class)
 
 @WebAppConfiguration
-public class KafkaPublisherTest {
+class KafkaPublisherTest {
 
   @MockBean
   private KafkaTemplate<String, String> kafkaTemplate;
@@ -33,7 +33,7 @@ public class KafkaPublisherTest {
 
   @SuppressWarnings("unchecked")
   @Test
-  public void testpublishCustometToKafka() {
+  void testpublishCustometToKafka() {
 
     when(kafkaTemplate.send(Mockito.any(String.class), Mockito.any(String.class)))
         .thenReturn(mock(ListenableFuture.class));

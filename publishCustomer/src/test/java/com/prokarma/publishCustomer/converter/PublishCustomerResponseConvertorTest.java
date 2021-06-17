@@ -8,7 +8,7 @@ import com.prokarma.publishCustomer.model.PublishCustomerResponse;
 import com.prokarma.publishCustomer.util.PublishCustomerConstants;
 
 @Tag("unit")
-public class PublishCustomerResponseConvertorTest {
+class PublishCustomerResponseConvertorTest {
 
   private PublishCustomerResponse publishCustomerResponse;
 
@@ -18,13 +18,23 @@ public class PublishCustomerResponseConvertorTest {
   public void setup() {
     publishCustomerResponseConvertor = new PublishCustomerResponseConvertor();
     publishCustomerResponse = new PublishCustomerResponse();
-    publishCustomerResponse.setMessage(PublishCustomerConstants.SUCCESS_MESSAGE);
-    publishCustomerResponse.setStatus(PublishCustomerConstants.SUCCESS);
+
   }
 
   @Test
-  public void testConvert() {
+  void testConvertSuccess() {
+    publishCustomerResponse.setMessage(PublishCustomerConstants.SUCCESS_MESSAGE);
+    publishCustomerResponse.setStatus(PublishCustomerConstants.SUCCESS);
     assertEquals(publishCustomerResponse.toString(),
         publishCustomerResponseConvertor.convert("Success").toString());
   }
+
+  @Test
+  void testConvertFailed() {
+    publishCustomerResponse.setMessage(PublishCustomerConstants.FAILURE_MESSAGE);
+    publishCustomerResponse.setStatus(PublishCustomerConstants.ERRORSTATUS);
+    assertEquals(publishCustomerResponse.toString(),
+        publishCustomerResponseConvertor.convert(PublishCustomerConstants.ERRORSTATUS).toString());
+  }
+
 }

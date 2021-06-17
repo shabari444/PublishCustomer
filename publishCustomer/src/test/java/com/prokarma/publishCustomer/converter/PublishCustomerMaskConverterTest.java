@@ -9,7 +9,7 @@ import com.prokarma.publishCustomer.model.Customer;
 import com.prokarma.publishCustomer.model.Customer.StatusEnum;
 
 @Tag("unit")
-public class PublishCustomerMaskConverterTest {
+class PublishCustomerMaskConverterTest {
 
   private PublishCustomerMaskConverter publishCustomerConverter;
 
@@ -50,16 +50,10 @@ public class PublishCustomerMaskConverterTest {
 
 
   @Test
-  public void testGetMaskedCustomerNumber() {
+  void testGetMaskedCustomerNumber() {
     assertEquals(maskedCustomer.toString(), publishCustomerConverter.convert(customer).toString());
   }
 
 
-  /*
-   * @Test public void testGetMaskedCustomerNumber() { assertEquals("****2345",
-   * publishCustomerConverter.getMaskedCustomerNumber("Pro12345")); }
-   * 
-   * @Test public void testGetMaskedEmail() { assertEquals("abc***@gmail.com",
-   * publishCustomerConverter.getMaskedEmail("abcXyz@gmail.com")); }
-   */
+
 }

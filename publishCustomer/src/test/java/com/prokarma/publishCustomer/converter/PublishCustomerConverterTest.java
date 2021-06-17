@@ -11,7 +11,7 @@ import com.prokarma.publishCustomer.model.KafkaCustomer;
 
 
 @Tag("unit")
-public class PublishCustomerConverterTest {
+class PublishCustomerConverterTest {
 
   private PublishCustomerConverter publishCustomerConverter;
 
@@ -56,7 +56,7 @@ public class PublishCustomerConverterTest {
 
 
   @Test
-  public void testconvert() {
+  void testconvert() {
     assertEquals(kafkaCustomer.toString(),
         publishCustomerConverter.convert(customer, "testTransactionId", "testActiveId").toString());
   }

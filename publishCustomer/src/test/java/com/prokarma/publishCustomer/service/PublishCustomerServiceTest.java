@@ -17,7 +17,7 @@ import com.prokarma.publishCustomer.util.PublishCustomerConstants;
 @SpringBootTest(classes = PublishCustomerApplication.class)
 @RunWith(SpringRunner.class)
 @WebAppConfiguration
-public class PublishCustomerServiceTest {
+class PublishCustomerServiceTest {
 
 
   @MockBean
@@ -25,8 +25,9 @@ public class PublishCustomerServiceTest {
 
 
   @Test
-  public void testPostCustomer() {
+  void testPostCustomer() {
     Mockito.when(kafkapublisher.publishCustometToKafka(new KafkaCustomer())).thenReturn("Success");
-    assertEquals(PublishCustomerConstants.SUCCESS, PublishCustomerConstants.SUCCESS);
+    String actual = "SUCCESS";
+    assertEquals(PublishCustomerConstants.SUCCESS, actual);
   }
 }

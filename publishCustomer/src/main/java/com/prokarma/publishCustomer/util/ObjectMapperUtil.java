@@ -9,9 +9,12 @@ import org.slf4j.LoggerFactory;
 
 
 
-// @Configuration
 public class ObjectMapperUtil {
   private static final Logger log = LoggerFactory.getLogger(ObjectMapperUtil.class);
+
+  private ObjectMapperUtil() {
+
+  }
 
   public static String returnJsonFromObject(Object dataSet) {
     String jsonObjectAsString = null;

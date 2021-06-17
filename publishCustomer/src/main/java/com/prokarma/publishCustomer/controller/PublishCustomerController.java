@@ -52,8 +52,9 @@ public class PublishCustomerController {
       @Valid @RequestBody(required = true) Customer customer) {
 
 
-    logger.info("[" + transactionId + "]" + "Incoming request info "
-        + ObjectMapperUtil.returnJsonFromObject(publishCustomerMaskConverter.convert(customer)));
+
+    logger.info(String.format("[%s]Incoming request info:%s", transactionId,
+        ObjectMapperUtil.returnJsonFromObject(publishCustomerMaskConverter.convert(customer))));
 
     KafkaCustomer kafkaCustomer =
         publishCustomerConverter.convert(customer, transactionId, activeId);
@@ -67,8 +68,8 @@ public class PublishCustomerController {
 
     responseEntity = new ResponseEntity<>(publishCustomerResponse, HttpStatus.OK);
 
-    logger.info("[" + transactionId + "]" + "Outgoing response:"
-        + ObjectMapperUtil.returnJsonFromObject(responseEntity));
+    logger.info(String.format("[%s]Outgoing response:%s", transactionId,
+        ObjectMapperUtil.returnJsonFromObject(responseEntity)));
 
     return responseEntity;
   }
