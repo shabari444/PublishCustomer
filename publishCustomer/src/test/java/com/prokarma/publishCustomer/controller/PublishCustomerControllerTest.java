@@ -4,15 +4,15 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import org.junit.Rule;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.oauth2.common.util.JacksonJsonParser;
 import org.springframework.security.web.FilterChainProxy;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -31,7 +31,6 @@ import com.prokarma.publishCustomer.model.Address;
 import com.prokarma.publishCustomer.model.Customer;
 import com.prokarma.publishCustomer.model.Customer.StatusEnum;
 import com.prokarma.publishCustomer.model.KafkaCustomer;
-import com.prokarma.publishCustomer.model.PublishCustomerResponse;
 import com.prokarma.publishCustomer.service.PublishCustomerService;
 import com.prokarma.publishCustomer.util.ObjectMapperUtil;
 
@@ -46,13 +45,23 @@ public class PublishCustomerControllerTest {
   private MockMvc mockMvc;
   private static final String CLIENT_ID = "qerwteyghsr";
   private static final String CLIENT_SECRET = "1234$#@!";
+  private static final String USERNAME = "prokarma";
+  private static final String PASSWORD = "pkSoftech";
 
   private static final String CONTENT_TYPE = "application/json;charset=UTF-8";
+
+  private static final String INVALID_TOKEN =
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2MjM5MzU4NjcsInVzZXJfbmFtZSI6InByb2thcm1hIiwiYXV0aG9yaXRpZXMiOlsiUk9MRV9VU0VSIl0sImp0aSI6IjEzNmFmMjUwLTU1NTUtNGRjOS1hNzUxLTBlNDZlZTE3MWY5ZiIsImNsaWVudF9pZCI6InFlcnd0ZXlnaHNyIiwic2NvcGUiOlsiYWxsIl19.U8m0NxKaP4vsvtoZv0ol47jL17-pF5XPpLhml2KMpxE";
 
   @Autowired
   private FilterChainProxy springSecurityFilterChain;
 
-  private Customer customer;
+  private Customer validCustomer;
+
+  private Customer inValidCustomer;
+
+  @Rule
+  public ExpectedException exception = ExpectedException.none();
 
   @BeforeEach
   public void setUp() {
@@ -60,28 +69,36 @@ public class PublishCustomerControllerTest {
         MockMvcBuilders.webAppContextSetup(this.wac).addFilter(springSecurityFilterChain).build();
     StatusEnum statusEnum = StatusEnum.OPEN;
     Address address = new Address();
-    /*
-     * { "customerNumber": "PK123456", "firstName": "Shabarish Kumar", "lastName":
-     * "Shabarish Kumar", "birthdate": "19-08-1995", "country": "India", "countryCode": "IN",
-     * "mobileNumber": "9874561230", "email": "abc@gmail.com", "status": "Restored", "address": {
-     * "addressLine1": "gtyu", "addressLine2": "string", "street": "string", "postalCode":"51577" }
-     * }
-     */
-    customer = new Customer();
+    Address invalidAddress = new Address();
+    validCustomer = new Customer();
     address.setAddressLine1("Hyderabad");
     address.setPostalCode("50001");
     address.setAddressLine2("2nd line");
     address.setStreet("my Street");
-    customer.setAddress(address);
-    customer.birthdate("19-08-1994");
-    customer.country("India");
-    customer.countryCode("IN");
-    customer.customerNumber("PK12345678");
-    customer.email("ehsabarish@pkglobal.com");
-    customer.firstName("Shabarish Kumar");
-    customer.lastName("Shabarish Elluru");
-    customer.mobileNumber("9871235670");
-    customer.setStatus(statusEnum);
+    validCustomer.setAddress(address);
+    validCustomer.birthdate("19-08-1994");
+    validCustomer.country("India");
+    validCustomer.countryCode("IN");
+    validCustomer.customerNumber("PK12345678");
+    validCustomer.email("ehsabarish@pkglobal.com");
+    validCustomer.firstName("Shabarish Kumar");
+    validCustomer.lastName("Shabarish Elluru");
+    validCustomer.mobileNumber("9871235670");
+    validCustomer.setStatus(statusEnum);
+    inValidCustomer = new Customer();
+    invalidAddress.setAddressLine1("Hyderabad*7^%7");
+    invalidAddress.setPostalCode("50000*651");
+    invalidAddress.setAddressLine2("2nd line");
+    invalidAddress.setStreet("my Street");
+    inValidCustomer.setAddress(address);
+    inValidCustomer.birthdate("198-08-1994");
+    inValidCustomer.country("Ind*7ia");
+    inValidCustomer.countryCode("IN8");
+    inValidCustomer.customerNumber("PK12345678()");
+    inValidCustomer.email("ehsabarishpkglobal.com");
+    inValidCustomer.firstName("Shabari");
+    inValidCustomer.lastName("Elluru");
+    inValidCustomer.mobileNumber("987123567098");
   }
 
 
@@ -97,51 +114,115 @@ public class PublishCustomerControllerTest {
   @MockBean
   private PublishCustomerResponseConvertor publishCustomerResponseConvertor;
 
-  private PublishCustomerResponse mockResponse = new PublishCustomerResponse();
-
-  private ResponseEntity<PublishCustomerResponse> responseEntity = null;
 
   private KafkaCustomer kafkaCustomer = new KafkaCustomer();
 
   @Test
-  public void testPublishCustomer() throws Exception {
-
-    mockResponse.setStatus("Success");
-    mockResponse.setMessage("Customer has been published successfully");
-
-    responseEntity = new ResponseEntity<>(mockResponse, HttpStatus.OK);
+  public void testPublishCustomerSuccessCase() throws Exception {
 
 
-    Mockito.when(publishCustomerService.postCustomer(kafkaCustomer)).thenReturn("Success");
-
-
-    String accessToken = obtainAccessToken("prokarma", "pkSoftech");
-
-    System.out.println(ObjectMapperUtil.returnJsonFromObject(customer));
+    String accessToken = obtainAccessToken(USERNAME, PASSWORD);
 
 
     mockMvc.perform(post("/api/publish").header("Authorization", "Bearer " + accessToken)
         .header("Transaction-Id", "testTransactionId").header("Activity-Id", "testActivityId")
         .contentType(CONTENT_TYPE)
-        .content(ObjectMapperUtil.returnJsonFromObject(customer).replaceAll("OPEN", "Open"))
+        .content(ObjectMapperUtil.returnJsonFromObject(validCustomer).replaceAll("OPEN", "Open"))
         .accept(CONTENT_TYPE)).andExpect(status().isOk());
 
-
-
-    /*
-     * MvcResult result = mockMvc.perform(requestBuilder).andReturn();
-     * 
-     * System.out.println(result.getResponse()); String expected = "Success";
-     * 
-     * // {"id":"Course1","name":"Spring","description":"10 Steps, 25 Examples and 10K //
-     * Students","steps":["Learn Maven","Import Project","First Example","Second Example"]}
-     * 
-     * // assertEquals("Success",;
-     * 
-     * JSONAssert.assertEquals(responseEntity.toString(), result.getResponse().getContentAsString(),
-     * false);
-     */
   }
+
+  @Test
+  public void testPublishCustomerAuthenticationfailed() throws Exception {
+
+    Mockito.when(publishCustomerService.postCustomer(kafkaCustomer)).thenReturn("Success");
+
+
+    System.out.println(ObjectMapperUtil.returnJsonFromObject(inValidCustomer));
+
+
+    mockMvc.perform(post("/api/publish").header("Authorization", "Bearer " + INVALID_TOKEN)
+        .header("Transaction-Id", "testTransactionId").header("Activity-Id", "testActivityId")
+        .contentType(CONTENT_TYPE)
+        .content(ObjectMapperUtil.returnJsonFromObject(inValidCustomer).replaceAll("OPEN", "Open"))
+        .accept(CONTENT_TYPE)).andExpect(status().isUnauthorized());
+
+  }
+
+  @Test
+  public void testPublishCustomerInvalidInput() throws Exception {
+
+    Mockito.when(publishCustomerService.postCustomer(kafkaCustomer)).thenReturn("Success");
+
+
+    System.out.println(ObjectMapperUtil.returnJsonFromObject(inValidCustomer));
+
+
+    mockMvc.perform(post("/api/publish")
+        .header("Authorization", "Bearer " + obtainAccessToken(USERNAME, PASSWORD))
+        .header("Transaction-Id", "testTransactionId").header("Activity-Id", "testActivityId")
+        .contentType(CONTENT_TYPE)
+        .content(ObjectMapperUtil.returnJsonFromObject(inValidCustomer).replaceAll("OPEN", "Open"))
+        .accept(CONTENT_TYPE)).andExpect(status().isBadRequest());
+
+  }
+
+  @Test
+  public void testPublishCustomerNoHandlerfound() throws Exception {
+
+    Mockito.when(publishCustomerService.postCustomer(kafkaCustomer)).thenReturn("Success");
+
+
+    System.out.println(ObjectMapperUtil.returnJsonFromObject(inValidCustomer));
+
+
+    mockMvc.perform(post("/api/get")
+        .header("Authorization", "Bearer " + obtainAccessToken(USERNAME, PASSWORD))
+        .header("Transaction-Id", "testTransactionId").header("Activity-Id", "testActivityId")
+        .contentType(CONTENT_TYPE)
+        .content(ObjectMapperUtil.returnJsonFromObject(inValidCustomer).replaceAll("OPEN", "Open"))
+        .accept(CONTENT_TYPE)).andExpect(status().isNotFound());
+
+  }
+
+  @Test
+  public void testPublishCustomerHeadersMissing() throws Exception {
+
+    Mockito.when(publishCustomerService.postCustomer(kafkaCustomer)).thenReturn("Success");
+
+
+    System.out.println(ObjectMapperUtil.returnJsonFromObject(inValidCustomer));
+
+
+    mockMvc.perform(post("/api/publish")
+        .header("Authorization", "Bearer " + obtainAccessToken(USERNAME, PASSWORD))
+        .header("Activity-Id", "testActivityId").contentType(CONTENT_TYPE)
+        .content(ObjectMapperUtil.returnJsonFromObject(inValidCustomer).replaceAll("OPEN", "Open"))
+        .accept(CONTENT_TYPE)).andExpect(status().isBadRequest());
+
+  }
+
+
+  /*
+   * @Test public void testPublishCustomerInternalServerError() throws Exception {
+   * 
+   * Mockito.when(publishCustomerService.postCustomer(kafkaCustomer)).thenReturn("Success");
+   * 
+   * 
+   * System.out.println(ObjectMapperUtil.returnJsonFromObject(inValidCustomer));
+   * 
+   * exception.expect(GeneralException.class);
+   * 
+   * mockMvc.perform(post("/api/publish") .header("Authorization", "Bearer " +
+   * obtainAccessToken(USERNAME, PASSWORD)) .header("Transaction-Id",
+   * "testTransactionId").header("Activity-Id", "testActivityId") .contentType(CONTENT_TYPE)
+   * .content(ObjectMapperUtil.returnJsonFromObject(inValidCustomer))
+   * .accept(CONTENT_TYPE)).andExpect(status().isInternalServerError());
+   * 
+   * }
+   */
+
+
 
   private String obtainAccessToken(String username, String password) throws Exception {
     final MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
@@ -150,15 +231,11 @@ public class PublishCustomerControllerTest {
     params.add("username", username);
     params.add("password", password);
 
-    // @formatter:off
+    ResultActions result = mockMvc
+        .perform(post("/oauth/token").params(params).with(httpBasic(CLIENT_ID, CLIENT_SECRET))
+            .accept(CONTENT_TYPE))
+        .andExpect(status().isOk()).andExpect(content().contentType(CONTENT_TYPE));
 
-    ResultActions result = mockMvc.perform(post("/oauth/token")
-                           .params(params)
-                           .with(httpBasic(CLIENT_ID, CLIENT_SECRET))
-                           .accept(CONTENT_TYPE))
-                           .andExpect(status().isOk())
-                           .andExpect(content().contentType(CONTENT_TYPE));
-    
     // @formatter:on
 
     String resultString = result.andReturn().getResponse().getContentAsString();
