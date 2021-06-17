@@ -90,6 +90,12 @@ public class Address implements Serializable {
     this.street = street;
   }
 
+  public Address postalCode(String postalCode) {
+    this.postalCode = postalCode;
+    return this;
+  }
+
+
   /**
    * Street name
    *
@@ -99,11 +105,11 @@ public class Address implements Serializable {
   @NotNull(message = "postal code is required")
   @Pattern(regexp = "^[\\w]{1,5}", message = "maximum length of postal code should be 5")
   public String getPostalCode() {
-    return street;
+    return postalCode;
   }
 
-  public void setPostalCode(String street) {
-    this.street = street;
+  public void setPostalCode(String postalCode) {
+    this.postalCode = postalCode;
   }
 
 
