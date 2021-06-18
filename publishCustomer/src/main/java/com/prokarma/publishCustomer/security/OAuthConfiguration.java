@@ -16,46 +16,44 @@ import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenCo
 @EnableAuthorizationServer
 public class OAuthConfiguration extends AuthorizationServerConfigurerAdapter {
 
-	@Value("${user.oauth.clientId}")
-	private String clientID;
+  @Value("${user.oauth.clientId}")
+  private String clientID;
 
-	@Value("${user.oauth.clientSecret}")
-	private String clientSecret;
+  @Value("${user.oauth.clientSecret}")
+  private String clientSecret;
 
-	@Value("${user.oauth.redirectUris}")
-	private String redirectURLs;
+  @Value("${user.oauth.accessTokenValidity}")
+  private int accessTokenValidity;
 
-	@Value("${user.oauth.accessTokenValidity}")
-	private int accessTokenValidity;
+  @Value("${user.oauth.refreshTokenValidity}")
+  private int refreshTokenValidity;
 
-	@Value("${user.oauth.refreshTokenValidity}")
-	private int refreshTokenValidity;
+  @Autowired
+  private AuthenticationManager authenticationManager;
 
-	@Autowired
-	private AuthenticationManager authenticationManager;
+  @Autowired
+  private BCryptPasswordEncoder passwordEncoder;
 
-	@Autowired
-	private BCryptPasswordEncoder passwordEncoder;
-	
-	@Autowired
-	private JwtAccessTokenConverter accesstokenConverter;
+  @Autowired
+  private JwtAccessTokenConverter accesstokenConverter;
 
-	@Override
-	public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
-		endpoints.accessTokenConverter(accesstokenConverter).authenticationManager(authenticationManager);
-	}
+  @Override
+  public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
+    endpoints.accessTokenConverter(accesstokenConverter)
+        .authenticationManager(authenticationManager);
+  }
 
-	@Override
-	public void configure(AuthorizationServerSecurityConfigurer oauthServer) throws Exception {
-		oauthServer.tokenKeyAccess("permitAll()").checkTokenAccess("isAuthenticated()");
-	}
+  @Override
+  public void configure(AuthorizationServerSecurityConfigurer oauthServer) throws Exception {
+    oauthServer.tokenKeyAccess("permitAll()").checkTokenAccess("isAuthenticated()");
+  }
 
-	@Override
-	public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
-		clients.inMemory().withClient(clientID).secret(passwordEncoder.encode(clientSecret))
-				.authorizedGrantTypes("client_credentials", "password", "refresh_token").scopes("all")
-				.accessTokenValiditySeconds(900);
-	}
+  @Override
+  public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
+    clients.inMemory().withClient(clientID).secret(passwordEncoder.encode(clientSecret))
+        .authorizedGrantTypes("client_credentials", "password", "refresh_token").scopes("all")
+        .accessTokenValiditySeconds(900);
+  }
 
-	
+
 }

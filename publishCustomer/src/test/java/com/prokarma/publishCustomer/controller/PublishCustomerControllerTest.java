@@ -1,9 +1,12 @@
 package com.prokarma.publishCustomer.controller;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import java.util.Arrays;
+import java.util.Map;
 import org.junit.Rule;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -13,6 +16,14 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.codec.Base64;
 import org.springframework.security.oauth2.common.util.JacksonJsonParser;
 import org.springframework.security.web.FilterChainProxy;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -33,11 +44,15 @@ import com.prokarma.publishCustomer.model.Customer.StatusEnum;
 import com.prokarma.publishCustomer.model.KafkaCustomer;
 import com.prokarma.publishCustomer.service.PublishCustomerService;
 import com.prokarma.publishCustomer.util.ObjectMapperUtil;
+import net.minidev.json.JSONObject;
 
 @RunWith(SpringRunner.class)
 @WebAppConfiguration
 @SpringBootTest(classes = PublishCustomerApplication.class)
 class PublishCustomerControllerTest {
+
+
+  TestRestTemplate restTemplate = new TestRestTemplate();
 
   @Autowired
   private WebApplicationContext wac;
@@ -223,5 +238,7 @@ class PublishCustomerControllerTest {
     JacksonJsonParser jsonParser = new JacksonJsonParser();
     return jsonParser.parseMap(resultString).get("access_token").toString();
   }
+
+
 
 }
