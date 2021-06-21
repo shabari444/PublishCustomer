@@ -61,16 +61,14 @@ public class PublishCustomerController {
 
     String message = publishCustomerService.postCustomer(kafkaCustomer);
 
-    ResponseEntity<PublishCustomerResponse> responseEntity = null;
 
     PublishCustomerResponse publishCustomerResponse =
         publishCustomerResponseConvertor.convert(message);
 
-    responseEntity = new ResponseEntity<>(publishCustomerResponse, HttpStatus.OK);
 
     logger.info(String.format("[%s]Outgoing response:%s", transactionId,
-        ObjectMapperUtil.returnJsonFromObject(responseEntity)));
+        ObjectMapperUtil.returnJsonFromObject(publishCustomerResponse)));
 
-    return responseEntity;
+    return new ResponseEntity<>(publishCustomerResponse, HttpStatus.OK);
   }
 }

@@ -127,6 +127,7 @@ class PublishCustomerApplicationTests {
 
     String credentials = CLIENT_ID + ":" + CLIENT_SECRET;
 
+    @SuppressWarnings("deprecation")
     String encodedCredentials = new String(Base64.encode(credentials.getBytes()));
 
     HttpHeaders headers = new HttpHeaders();

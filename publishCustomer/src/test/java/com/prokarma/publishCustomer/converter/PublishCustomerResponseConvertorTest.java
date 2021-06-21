@@ -1,6 +1,6 @@
 package com.prokarma.publishCustomer.converter;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -25,16 +25,26 @@ class PublishCustomerResponseConvertorTest {
   void testConvertSuccess() {
     publishCustomerResponse.setMessage(PublishCustomerConstants.SUCCESS_MESSAGE);
     publishCustomerResponse.setStatus(PublishCustomerConstants.SUCCESS);
-    assertEquals(publishCustomerResponse.toString(),
-        publishCustomerResponseConvertor.convert("Success").toString());
+    assertTrue(publishCustomerResponse.equals(publishCustomerResponseConvertor.convert("Success"))
+        && publishCustomerResponse.toString()
+            .equals(publishCustomerResponseConvertor.convert("Success").toString())
+        && publishCustomerResponse.hashCode() == publishCustomerResponseConvertor.convert("Success")
+            .hashCode());
+    // assertEquals(publishCustomerResponse, publishCustomerResponseConvertor.convert("Success"));
+
   }
 
   @Test
   void testConvertFailed() {
     publishCustomerResponse.setMessage(PublishCustomerConstants.FAILURE_MESSAGE);
     publishCustomerResponse.setStatus(PublishCustomerConstants.ERRORSTATUS);
-    assertEquals(publishCustomerResponse.toString(),
-        publishCustomerResponseConvertor.convert(PublishCustomerConstants.ERRORSTATUS).toString());
+    assertTrue(publishCustomerResponse
+        .equals(publishCustomerResponseConvertor.convert(PublishCustomerConstants.ERRORSTATUS))
+        && publishCustomerResponse.toString()
+            .equals(publishCustomerResponseConvertor.convert(PublishCustomerConstants.ERRORSTATUS)
+                .toString())
+        && publishCustomerResponse.hashCode() == publishCustomerResponseConvertor
+            .convert(PublishCustomerConstants.ERRORSTATUS).hashCode());
   }
 
 }

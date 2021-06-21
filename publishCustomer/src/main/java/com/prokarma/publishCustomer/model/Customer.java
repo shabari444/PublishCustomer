@@ -305,20 +305,34 @@ public class Customer implements Serializable {
     this.address = address;
   }
 
-  /*
-   * @Override public boolean equals(java.lang.Object o) { if (this == o) { return true; } if (o ==
-   * null || getClass() != o.getClass()) { return false; } Customer customer = (Customer) o; return
-   * Objects.equals(this.customerNumber, customer.customerNumber) && Objects.equals(this.firstName,
-   * customer.firstName) && Objects.equals(this.lastName, customer.lastName) &&
-   * Objects.equals(this.birthdate, customer.birthdate) && Objects.equals(this.country,
-   * customer.country) && Objects.equals(this.countryCode, customer.countryCode) &&
-   * Objects.equals(this.mobileNumber, customer.mobileNumber) && Objects.equals(this.email,
-   * customer.email) && Objects.equals(this.status, customer.status) && Objects.equals(this.address,
-   * customer.address); }
-   * 
-   * @Override public int hashCode() { return Objects.hash(customerNumber, firstName, lastName,
-   * birthdate, country, countryCode, mobileNumber, email, status, address); }
-   */
+
+  @Override
+  public boolean equals(java.lang.Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+    Customer customer = (Customer) o;
+    return Objects.equals(this.customerNumber, customer.customerNumber)
+        && Objects.equals(this.firstName, customer.firstName)
+        && Objects.equals(this.lastName, customer.lastName)
+        && Objects.equals(this.birthdate, customer.birthdate)
+        && Objects.equals(this.country, customer.country)
+        && Objects.equals(this.countryCode, customer.countryCode)
+        && Objects.equals(this.mobileNumber, customer.mobileNumber)
+        && Objects.equals(this.email, customer.email)
+        && Objects.equals(this.status, customer.status)
+        && Objects.equals(this.address, customer.address);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(customerNumber, firstName, lastName, birthdate, country, countryCode,
+        mobileNumber, email, status, address);
+  }
+
 
   @Override
   public String toString() {

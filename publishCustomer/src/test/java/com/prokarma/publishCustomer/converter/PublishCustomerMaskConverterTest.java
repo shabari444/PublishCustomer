@@ -1,6 +1,6 @@
 package com.prokarma.publishCustomer.converter;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.Assert.assertTrue;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -51,7 +51,9 @@ class PublishCustomerMaskConverterTest {
 
   @Test
   void testGetMaskedCustomerNumber() {
-    assertEquals(maskedCustomer.toString(), publishCustomerConverter.convert(customer).toString());
+    assertTrue(maskedCustomer.equals(publishCustomerConverter.convert(customer)) && 
+        maskedCustomer.toString().equals(publishCustomerConverter.convert(customer).toString()) &&
+        maskedCustomer.hashCode()==publishCustomerConverter.convert(customer).hashCode());
   }
 
 

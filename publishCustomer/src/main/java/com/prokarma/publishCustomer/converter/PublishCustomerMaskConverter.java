@@ -6,12 +6,10 @@ import com.prokarma.publishCustomer.model.Customer;
 @Component
 public class PublishCustomerMaskConverter {
 
-  private StringBuilder sb = null;
 
-  private Customer maskedCustomer = null;
 
   public Customer convert(Customer customer) {
-    maskedCustomer = new Customer();
+    Customer  maskedCustomer = new Customer();
     maskedCustomer.setCustomerNumber(getMaskedCustomerNumber(customer.getCustomerNumber()));
     maskedCustomer.setFirstName(customer.getFirstName());
     maskedCustomer.setLastName(customer.getLastName());
@@ -26,7 +24,7 @@ public class PublishCustomerMaskConverter {
   }
 
   private String getMaskedCustomerNumber(String customerNumber) {
-    sb = new StringBuilder("");
+    StringBuilder sb = new StringBuilder("");
     for (int i = 0; i < customerNumber.length() - 4; i++) {
       sb.append("*");
     }
@@ -35,13 +33,13 @@ public class PublishCustomerMaskConverter {
   }
 
   private String getMaskedDob(String dob) {
-    sb = new StringBuilder("**-**-");
+    StringBuilder sb = new StringBuilder("**-**-");
     sb.append(dob.substring(dob.length() - 4, dob.length()));
     return sb.toString();
   }
 
   private String getMaskedEmail(String email) {
-    sb = new StringBuilder(email.substring(0, 3));
+    StringBuilder sb = new StringBuilder(email.substring(0, 3));
     int reqIndex = email.indexOf("@");
     for (int i = 3; i < reqIndex; i++) {
       sb.append("*");

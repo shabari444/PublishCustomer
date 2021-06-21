@@ -113,16 +113,27 @@ public class Address implements Serializable {
   }
 
 
-  /*
-   * @Override public boolean equals(java.lang.Object o) { if (this == o) { return true; } if (o ==
-   * null || getClass() != o.getClass()) { return false; } Address address = (Address) o; return
-   * Objects.equals(this.addressLine1, address.addressLine1) && Objects.equals(this.addressLine2,
-   * address.addressLine2) && Objects.equals(this.street, address.street) &&
-   * Objects.equals(this.postalCode, address.postalCode); }
-   * 
-   * @Override public int hashCode() { return Objects.hash(addressLine1, addressLine2, street,
-   * postalCode); }
-   */
+
+  @Override
+  public boolean equals(java.lang.Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+    Address address = (Address) o;
+    return Objects.equals(this.addressLine1, address.addressLine1)
+        && Objects.equals(this.addressLine2, address.addressLine2)
+        && Objects.equals(this.street, address.street)
+        && Objects.equals(this.postalCode, address.postalCode);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(addressLine1, addressLine2, street, postalCode);
+  }
+
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();

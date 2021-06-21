@@ -29,7 +29,6 @@ public class PublishCustomerControllerAdvice {
 
   private String trasactionId = "transaction-id";
 
-  private ErrorResponse errorResponse = null;
 
   /**
    * 
@@ -40,7 +39,7 @@ public class PublishCustomerControllerAdvice {
   @ExceptionHandler(ServletRequestBindingException.class)
   public ResponseEntity<ErrorResponse> handleException(ServletRequestBindingException ex,
       HttpServletRequest request) {
-    errorResponse = new ErrorResponse();
+    ErrorResponse errorResponse = new ErrorResponse();
     errorResponse.setStatus(PublishCustomerConstants.ERRORSTATUS);
     errorResponse.setMessage("Input Headers are mising: " + ex.getMessage());
     errorResponse.setErrorType(InputException.class.getSimpleName());
@@ -60,7 +59,7 @@ public class PublishCustomerControllerAdvice {
   @ExceptionHandler(AuthenticationException.class)
   public ResponseEntity<ErrorResponse> handleException(AuthenticationException ex,
       HttpServletRequest request) {
-    errorResponse = new ErrorResponse();
+    ErrorResponse errorResponse = new ErrorResponse();
     errorResponse.setStatus(PublishCustomerConstants.ERRORSTATUS);
     errorResponse.setMessage("Token exception: " + ex.getMessage());
     errorResponse.setErrorType(TokenException.class.getSimpleName());
@@ -72,7 +71,7 @@ public class PublishCustomerControllerAdvice {
   @ExceptionHandler(NoHandlerFoundException.class)
   public ResponseEntity<ErrorResponse> handleException(NoHandlerFoundException ex,
       HttpServletRequest request) {
-    errorResponse = new ErrorResponse();
+    ErrorResponse errorResponse = new ErrorResponse();
     errorResponse.setStatus(PublishCustomerConstants.ERRORSTATUS);
     errorResponse.setMessage("General error: " + ex.getMessage());
     errorResponse.setErrorType(GeneralException.class.getSimpleName());
@@ -85,7 +84,7 @@ public class PublishCustomerControllerAdvice {
   @ExceptionHandler(GeneralException.class)
   public ResponseEntity<ErrorResponse> handleException(GeneralException ex,
       HttpServletRequest request) {
-    errorResponse = new ErrorResponse();
+    ErrorResponse errorResponse = new ErrorResponse();
     errorResponse.setStatus(PublishCustomerConstants.ERRORSTATUS);
     errorResponse.setMessage("General error: " + ex.getMessage());
     errorResponse.setErrorType(GeneralException.class.getSimpleName());
@@ -114,7 +113,7 @@ public class PublishCustomerControllerAdvice {
       }
     }
 
-    errorResponse = new ErrorResponse();
+    ErrorResponse errorResponse = new ErrorResponse();
     errorResponse.setStatus(PublishCustomerConstants.ERRORSTATUS);
     errorResponse.setMessage("Input request validation failed: " + fieldValidationError);
     errorResponse.setErrorType(InputException.class.getSimpleName());

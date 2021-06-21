@@ -1,29 +1,18 @@
 package com.prokarma.publishCustomer.controller;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import java.util.Arrays;
-import java.util.Map;
 import org.junit.Rule;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.boot.web.server.LocalServerPort;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.codec.Base64;
 import org.springframework.security.oauth2.common.util.JacksonJsonParser;
 import org.springframework.security.web.FilterChainProxy;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -41,10 +30,8 @@ import com.prokarma.publishCustomer.converter.PublishCustomerResponseConvertor;
 import com.prokarma.publishCustomer.model.Address;
 import com.prokarma.publishCustomer.model.Customer;
 import com.prokarma.publishCustomer.model.Customer.StatusEnum;
-import com.prokarma.publishCustomer.model.KafkaCustomer;
 import com.prokarma.publishCustomer.service.PublishCustomerService;
 import com.prokarma.publishCustomer.util.ObjectMapperUtil;
-import net.minidev.json.JSONObject;
 
 @RunWith(SpringRunner.class)
 @WebAppConfiguration
@@ -130,8 +117,6 @@ class PublishCustomerControllerTest {
   private PublishCustomerResponseConvertor publishCustomerResponseConvertor;
 
 
-  private KafkaCustomer kafkaCustomer = new KafkaCustomer();
-
   @Test
   void testPublishCustomerSuccessCase() throws Exception {
 
@@ -150,11 +135,6 @@ class PublishCustomerControllerTest {
   @Test
   void testPublishCustomerAuthenticationfailed() throws Exception {
 
-    Mockito.when(publishCustomerService.postCustomer(kafkaCustomer)).thenReturn("Success");
-
-
-    System.out.println(ObjectMapperUtil.returnJsonFromObject(inValidCustomer));
-
 
     mockMvc.perform(post("/api/publish").header("Authorization", "Bearer " + INVALID_TOKEN)
         .header("Transaction-Id", "testTransactionId").header("Activity-Id", "testActivityId")
@@ -166,12 +146,6 @@ class PublishCustomerControllerTest {
 
   @Test
   void testPublishCustomerInvalidInput() throws Exception {
-
-    Mockito.when(publishCustomerService.postCustomer(kafkaCustomer)).thenReturn("Success");
-
-
-    System.out.println(ObjectMapperUtil.returnJsonFromObject(inValidCustomer));
-
 
     mockMvc.perform(post("/api/publish")
         .header("Authorization", "Bearer " + obtainAccessToken(USERNAME, PASSWORD))
@@ -185,12 +159,6 @@ class PublishCustomerControllerTest {
   @Test
   void testPublishCustomerNoHandlerfound() throws Exception {
 
-    Mockito.when(publishCustomerService.postCustomer(kafkaCustomer)).thenReturn("Success");
-
-
-    System.out.println(ObjectMapperUtil.returnJsonFromObject(inValidCustomer));
-
-
     mockMvc.perform(post("/api/get")
         .header("Authorization", "Bearer " + obtainAccessToken(USERNAME, PASSWORD))
         .header("Transaction-Id", "testTransactionId").header("Activity-Id", "testActivityId")
@@ -203,17 +171,15 @@ class PublishCustomerControllerTest {
   @Test
   void testPublishCustomerHeadersMissing() throws Exception {
 
-    Mockito.when(publishCustomerService.postCustomer(kafkaCustomer)).thenReturn("Success");
 
-
-    System.out.println(ObjectMapperUtil.returnJsonFromObject(inValidCustomer));
-
-
-    mockMvc.perform(post("/api/publish")
-        .header("Authorization", "Bearer " + obtainAccessToken(USERNAME, PASSWORD))
-        .header("Activity-Id", "testActivityId").contentType(CONTENT_TYPE)
-        .content(ObjectMapperUtil.returnJsonFromObject(inValidCustomer).replaceAll("OPEN", "Open"))
-        .accept(CONTENT_TYPE)).andExpect(status().isBadRequest());
+    mockMvc
+        .perform(post("/api/publish")
+            .header("Authorization", "Bearer " + obtainAccessToken(USERNAME, PASSWORD))
+            .header("Activity-Id", "testActivityId").contentType(CONTENT_TYPE)
+            .content(
+                ObjectMapperUtil.returnJsonFromObject(inValidCustomer).replaceAll("OPEN", "Open"))
+            .accept(CONTENT_TYPE))
+        .andExpect(status().isBadRequest()).andExpect(content().contentType(CONTENT_TYPE));
 
   }
 
